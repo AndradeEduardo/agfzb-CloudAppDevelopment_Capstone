@@ -35,7 +35,7 @@
               >Contact Us</a
             >
             <a class="btn btn-link" href="#"> ({{ user.first_name }}) </a>
-            <a class="btn btn-light" href="#">Logout</a>
+            <a class="btn btn-light" href="{% url 'djangoapp:logout' %}">Logout</a>
           </li>
           {% else %}
           <li>
