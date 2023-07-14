@@ -19,7 +19,7 @@ class CarMake(models.Model):
 class CarDealer():
 
     def __str__(self):
-        return self.name
+        return None
 
 
 # <HINT> Create a Car Model model `class CarModel(models.Model):`:
