@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-# from .restapis import related methods
+from .restapis import get_dealers_from_cf
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -57,8 +57,6 @@ def logout_request(request):
     return redirect('djangoapp:index')
 
 # Create a `registration_request` view to handle sign up request
-
-
 def registration_request(request):
     context = {}
     if request.method == 'GET':
@@ -85,12 +83,15 @@ def registration_request(request):
             return render(request, 'djangoapp/registration.html', context)
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
-
-
 def get_dealerships(request):
-    context = {}
     if request.method == "GET":
-        return render(request, 'djangoapp/index.html', context)
+        url = "https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/get-dealership"
+        # Get dealers from the URL
+        dealerships = get_dealers_from_cf(url)
+        # Concat all dealer's short name
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        # Return a list of dealer short name
+        return HttpResponse(dealer_names)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
