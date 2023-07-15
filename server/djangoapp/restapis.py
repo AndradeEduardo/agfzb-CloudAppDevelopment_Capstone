@@ -1,6 +1,6 @@
 import requests
 import json
-from .models import CarDealer
+from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 
 
@@ -53,8 +53,7 @@ def get_dealers_from_cf(url, **kwargs):
 
     return results
 
-def get_dealer_by_id(url, **kwargs):
-    print("get_dealer_bu_id received: ", kwargs)
+def get_dealer_by_id(url, state):
     results = []
     # Call get_request with a URL parameter
     json_result = get_request(url, id=kwargs["id"])
@@ -74,10 +73,62 @@ def get_dealer_by_id(url, **kwargs):
     return results
 
 
+def get_dealers_by_state(url, state):
+    results = []
+    # Call get_request with a URL parameter
+    json_result = get_request(url, st=state)
+    print ("json_result")
+    print(json_result)
+    if json_result:
+        # Get the row list in JSON as dealers
+        dealers = json_result
+        print(dealers)
+        # For each dealer object
+        for dealer in dealers:
+            print(dealer['short_name'])
+            # Get its content in `doc` object
+            # dealer_doc = dealer["doc"]
+            # Create a CarDealer object with values in `doc` object
+            dealer_obj = CarDealer(address=dealer["address"], city=dealer["city"], full_name=dealer["full_name"],
+                                   id=dealer["id"], lat=dealer["lat"], long=dealer["long"],
+                                   short_name=dealer["short_name"],
+                                   st=dealer["st"], zip=dealer["zip"])
+            results.append(dealer_obj)
+            print(dealer_obj)
+
+    return results
+
+
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
 # def get_dealer_by_id_from_cf(url, dealerId):
 # - Call get_request() with specified arguments
 # - Parse JSON results into a DealerView object list
+def get_dealer_reviews_from_cf(url, dealer_id):
+    results = []
+    # Call get_request with a URL parameter
+    json_result = get_request(url, id=dealer_id)
+    # print(json_result['data']['docs'])
+    # print ("json_result")
+    # print(json_result[0])
+    reviews = json_result['data']['docs']
+    #print(type(reviews))
+    #print(reviews)
+    if json_result:
+        # Get the row list in JSON as dealers
+        reviews = json_result['data']['docs']
+        # For each dealer object
+        for review in reviews:
+            print(review)
+            # Get its content in `doc` object
+            # review_doc = review["doc"]
+            # Create a CarDealer object with values in `doc` object
+            review_obj = DealerReview(dealership=review['dealership'], name=review['name'], purchase=review['purchase'],
+                                        review=review['review'], purchase_date=review['purchase_date'],
+                                        car_make=review['car_make'], car_model=review['car_model'], car_year=review['car_year'],
+                                        sentiment=None, id=review['id'])
+            results.append(review_obj)
+            print(review_obj)
+    return results
 
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
