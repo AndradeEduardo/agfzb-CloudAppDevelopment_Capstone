@@ -95,7 +95,7 @@ class DealerReview():
         self.id = id
 
     def __str__(self):
-        str_out = self.name + "-" + str(self.sentiment)
+        str_out = self.name + ";'" + str(self.review) + "';" +str(self.sentiment)
         print(str_out)
         return str_out
     
