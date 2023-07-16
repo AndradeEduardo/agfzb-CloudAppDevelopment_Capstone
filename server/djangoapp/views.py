@@ -3,18 +3,41 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-from .restapis import get_dealers_from_cf, get_dealer_by_id, get_dealers_by_state, get_dealer_reviews_from_cf
+from .restapis import get_dealers_from_cf, get_dealer_by_id, get_dealers_by_state, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
 import logging
 import json
+from random import randint
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
 
 # Create your views here.
+def add_review(request, dealer_id):
+    print("Veio add_review")
+    if request.user.is_authenticated:
+        print("user is auth")
+        review = dict()
+        review['dealership'] = dealer_id
+        review['name'] = 'Eduardo'
+        review['id'] = randint(0, 9999999999)
+        review['purchase'] = 'Yes'
+        review['review'] = 'Too bureucratic'
+        review['purchase_date'] = '03/14/2019'
+        review['car_make'] = 'Audi'
+        review['car_model'] = 'Q7'
+        review['car_year'] = '2017'
+        json_payload = dict()
+        json_payload['review'] = review
+        url = 'https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/post-review'
+        response = post_request(url, json_payload, dealer_id=dealer_id)
+        return HttpResponse(response)
+    else:
+        print("user not auth")
+        return redirect('djangoapp:login')
 
 
 # Create an `about` view to render a static about page
@@ -57,6 +80,8 @@ def logout_request(request):
     return redirect('djangoapp:index')
 
 # Create a `registration_request` view to handle sign up request
+
+
 def registration_request(request):
     context = {}
     if request.method == 'GET':
@@ -83,11 +108,13 @@ def registration_request(request):
             return render(request, 'djangoapp/registration.html', context)
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
+
+
 def get_dealerships(request):
     if request.method == "GET":
         url = "https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/get-dealership"
         # Get dealers from the URL
-        #dealerships = get_dealers_from_cf(url)
+        # dealerships = get_dealers_from_cf(url)
         dealerships = get_dealers_from_cf(url)
         # Concat all dealer's short name
         dealer_names = ' '.join([dealer.short_name for dealer in dealerships])

@@ -27,6 +27,12 @@ def get_request(url, **kwargs):
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
+def post_request(url, json_payload, **kwargs):
+    print(json_payload)
+    print(kwargs)
+    response = requests.post(url, params=kwargs, json=json_payload)
+    return response.text
+
 
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
@@ -133,7 +139,7 @@ def get_dealer_reviews_from_cf(url, dealer_id, api_key=None):
             review_obj = DealerReview(dealership=review['dealership'], name=review['name'], purchase=review['purchase'],
                                       review=review['review'], purchase_date=review['purchase_date'],
                                       car_make=review['car_make'], car_model=review['car_model'], car_year=review['car_year'],
-                                      sentiment=None, id=review['id'])
+                                      sentiment=None)
             review_obj.sentiment = analyze_review_sentiments(review_obj.review)
             results.append(review_obj)
             print(review_obj)
