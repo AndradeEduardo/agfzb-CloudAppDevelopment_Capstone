@@ -17,27 +17,27 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 def add_review(request, dealer_id):
-    print("Veio add_review")
-    if request.user.is_authenticated:
-        print("user is auth")
-        review = dict()
-        review['dealership'] = dealer_id
-        review['name'] = 'Eduardo'
-        review['id'] = randint(0, 9999999999)
-        review['purchase'] = 'Yes'
-        review['review'] = 'Too bureucratic'
-        review['purchase_date'] = '03/14/2019'
-        review['car_make'] = 'Audi'
-        review['car_model'] = 'Q7'
-        review['car_year'] = '2017'
-        json_payload = dict()
-        json_payload['review'] = review
-        url = 'https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/post-review'
-        response = post_request(url, json_payload, dealer_id=dealer_id)
-        return HttpResponse(response)
-    else:
-        print("user not auth")
-        return redirect('djangoapp:login')
+    if request.method == "GET":
+        if request.user.is_authenticated:
+            print("user is auth")
+            review = dict()
+            review['dealership'] = dealer_id
+            review['name'] = 'Eduardo'
+            review['id'] = randint(0, 9999999999)
+            review['purchase'] = 'Yes'
+            review['review'] = 'Too bureucratic'
+            review['purchase_date'] = '03/14/2019'
+            review['car_make'] = 'Audi'
+            review['car_model'] = 'Q7'
+            review['car_year'] = '2017'
+            json_payload = dict()
+            json_payload['review'] = review
+            url = 'https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/post-review'
+            response = post_request(url, json_payload, dealer_id=dealer_id)
+            return HttpResponse(response)
+        else:
+            print("user not auth")
+            return redirect('djangoapp:login')
 
 
 # Create an `about` view to render a static about page
@@ -111,15 +111,19 @@ def registration_request(request):
 
 
 def get_dealerships(request):
+    context = {}
     if request.method == "GET":
         url = "https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/get-dealership"
         # Get dealers from the URL
         # dealerships = get_dealers_from_cf(url)
         dealerships = get_dealers_from_cf(url)
+        print(len(dealerships))
         # Concat all dealer's short name
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        context['dealership_list'] = dealerships
+        # dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
         # Return a list of dealer short name
-        return HttpResponse(dealer_names)
+        # return HttpResponse(dealer_names)
+        return render(request, 'djangoapp/index.html', context)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer

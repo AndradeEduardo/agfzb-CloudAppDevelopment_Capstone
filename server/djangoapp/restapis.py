@@ -41,8 +41,9 @@ def post_request(url, json_payload, **kwargs):
 # - Parse JSON results into a CarDealer object list
 def get_dealers_from_cf(url, **kwargs):
     results = []
+    api_key = os.environ['API_KEY']
     # Call get_request with a URL parameter
-    json_result = get_request(url)
+    json_result = get_request(url, auth=HTTPBasicAuth('apikey', api_key))
     print("json_result")
     print(json_result[0])
     if json_result:
