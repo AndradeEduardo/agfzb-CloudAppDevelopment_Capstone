@@ -17,12 +17,11 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 def add_review(request, dealer_id):
+    context = {}
+    context['dealer_id'] = dealer_id
     if request.method == "GET":
         cars = CarModel.objects.filter(dealer_id=dealer_id)
-        print("cars:")
-        print(type(cars))
-        print(len(cars))
-        print(cars)
+        context['cars_list'] = list(cars)
         if request.user.is_authenticated:
             print("user is auth")
             review = dict()
@@ -39,7 +38,8 @@ def add_review(request, dealer_id):
             json_payload['review'] = review
             url = 'https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/post-review'
             response = post_request(url, json_payload, dealer_id=dealer_id)
-            return HttpResponse(response)
+            # return HttpResponse(response)
+            return render(request, 'djangoapp/add_review.html', context)
         else:
             print("user not auth")
             return redirect('djangoapp:login')
