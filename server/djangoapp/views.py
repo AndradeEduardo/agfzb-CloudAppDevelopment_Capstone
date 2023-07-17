@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-# from .models import related models
+from .models import CarModel, CarMake, CarDealer
 from .restapis import get_dealers_from_cf, get_dealer_by_id, get_dealers_by_state, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -18,6 +18,11 @@ logger = logging.getLogger(__name__)
 # Create your views here.
 def add_review(request, dealer_id):
     if request.method == "GET":
+        cars = CarModel.objects.filter(dealer_id=dealer_id)
+        print("cars:")
+        print(type(cars))
+        print(len(cars))
+        print(cars)
         if request.user.is_authenticated:
             print("user is auth")
             review = dict()
