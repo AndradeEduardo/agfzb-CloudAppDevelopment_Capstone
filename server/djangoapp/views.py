@@ -29,22 +29,6 @@ def add_review(request, dealer_id):
         context['dealer_name'] = dealer.full_name
         context['cars_list'] = list(cars)
         if request.user.is_authenticated:
-            print("user is auth")
-            review = dict()
-            review['dealership'] = dealer_id
-            review['name'] = 'Eduardo'
-            review['id'] = randint(0, 9999999999)
-            review['purchase'] = 'Yes'
-            review['review'] = 'Too bureucratic'
-            review['purchase_date'] = '03/14/2019'
-            review['car_make'] = 'Audi'
-            review['car_model'] = 'Q7'
-            review['car_year'] = '2017'
-            json_payload = dict()
-            json_payload['review'] = review
-            url_post_review = os.environ['URL_POST_REVIEW']
-            # response = post_request(url_post_review, json_payload, dealer_id=dealer_id)
-            # return HttpResponse(response)
             return render(request, 'djangoapp/add_review.html', context)
         else:
             print("user not auth")
@@ -53,7 +37,6 @@ def add_review(request, dealer_id):
         print(request.POST)
         car = CarModel.objects.get(pk=request.POST['car'])
         print(car.make.description)
-
         review = {}
         review['review'] = request.POST['review_text']
         review['name'] = request.user.first_name + " " + request.user.last_name
@@ -65,18 +48,12 @@ def add_review(request, dealer_id):
         review['car_make'] = car.make.name
         review['purchase_date'] = request.POST['purchasedate']
         review['car_year'] = car.year
-
-       
-        json_review = {}
-
-        json_review['review'] = review
-        print(json_review)
-        context['json_review'] = json_review
-        # purchased = request.POST['purchasecheck']
-
-        
-        
-        # return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
+        json_payload = {}
+        json_payload['review'] = review
+        # print(json_review)
+        url_post_review = os.environ['URL_POST_REVIEW']
+        response = post_request(url_post_review, json_payload, dealer_id=dealer_id)
+        return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
 
 
 # Create an `about` view to render a static about page
@@ -166,9 +143,12 @@ def get_dealerships(request):
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
-def get_dealer_details(request, dealer_id, dealer_name):
+def get_dealer_details(request, dealer_id):
     context = {}
-    context['dealer_name'] = dealer_name
+    url_get_dealers = os.environ['URL_GET_DEALERS']
+    dealer = get_dealer_by_id(url=url_get_dealers, id=dealer_id)
+    # print(dealer)
+    context['dealer_name'] = dealer.full_name
     context['dealer_id'] = dealer_id
     url = "https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/get-reviews"
     reviews = get_dealer_reviews_from_cf(url, dealer_id)

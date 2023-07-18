@@ -122,8 +122,8 @@ def get_dealer_reviews_from_cf(url, dealer_id, api_key=None):
     else:
         json_result = get_request(url, id=dealer_id)
     # print(json_result['data']['docs'])
-    # print ("json_result")
-    # print(json_result[0])
+    print ("json_result")
+    print(json_result)
     reviews = json_result['data']['docs']
     # print(type(reviews))
     # print(reviews)
