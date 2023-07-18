@@ -24,7 +24,7 @@
               <a class="btn btn-light" href="{% url 'djangoapp:contact' %}"
                 >Contact Us</a
               >
-              <a class="btn btn-light" href="#"
+              <a class="btn btn-light" href="{% url 'djangoapp:add_dealer_review' dealer_id%}"
                 >Add Review</a
               >
               <a class="btn btn-link" href="#"> ({{ user.first_name }}) </a>

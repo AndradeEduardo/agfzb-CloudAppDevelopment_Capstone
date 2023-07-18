@@ -103,7 +103,7 @@
                 <label for="car"><b>Select your car: </b></label>
                 <select name="car" id="car" class="form-select" required>
                     {% for car in cars_list %}
-                        <option selected value={{car.id}}>{{car.name}}-{{car.make.name}}-{{ car.year }}</option>
+                        <option selected value={{car.id}}>{{ car.name }}-{{ car.make.name }}-{{ car.year }}</option>
                     {% endfor %}
                </select>
             </div>
