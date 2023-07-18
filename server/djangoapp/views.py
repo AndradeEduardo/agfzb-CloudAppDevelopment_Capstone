@@ -10,6 +10,7 @@ from datetime import datetime
 import logging
 import json
 from random import randint
+import os
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -20,7 +21,11 @@ def add_review(request, dealer_id):
     context = {}
     context['dealer_id'] = dealer_id
     if request.method == "GET":
+        url_get_dealers = os.environ['URL_GET_DEALERS']
         cars = CarModel.objects.filter(dealer_id=dealer_id)
+        dealer = get_dealer_by_id(url=url_get_dealers, id=dealer_id)
+        # print(dealer)
+        context['dealer_name'] = dealer.full_name
         context['cars_list'] = list(cars)
         if request.user.is_authenticated:
             print("user is auth")
@@ -36,13 +41,17 @@ def add_review(request, dealer_id):
             review['car_year'] = '2017'
             json_payload = dict()
             json_payload['review'] = review
-            url = 'https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/post-review'
-            response = post_request(url, json_payload, dealer_id=dealer_id)
+            url_post_review = os.environ['URL_POST_REVIEW']
+            response = post_request(url_post_review, json_payload, dealer_id=dealer_id)
             # return HttpResponse(response)
             return render(request, 'djangoapp/add_review.html', context)
         else:
             print("user not auth")
             return redirect('djangoapp:login')
+    elif request.method == "POST":
+        review = {}
+        review_text = request.POST['username']
+        purchased = request.POST['purchasecheck']
 
 
 # Create an `about` view to render a static about page
