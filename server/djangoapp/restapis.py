@@ -154,7 +154,7 @@ def analyze_review_sentiments(text):
     # - Call get_request() with specified arguments
     api_key = os.environ['API_KEY']
     print(api_key)
-    url = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/7c29c038-64fb-4ffc-90c5-26c180368811'
+    url = os.environ['URL_NLU']
 
     # response = get_request(url, text=text, version='2022-08-10',
     #                        features='sentiment', headers={'Content-Type': 'application/json'},

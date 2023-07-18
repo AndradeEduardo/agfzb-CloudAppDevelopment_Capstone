@@ -129,7 +129,8 @@ def registration_request(request):
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
-        url = "https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/get-dealership"
+        #url = "https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/get-dealership"
+        url = os.environ['URL_GET_DEALERS']
         # Get dealers from the URL
         # dealerships = get_dealers_from_cf(url)
         dealerships = get_dealers_from_cf(url)
@@ -150,7 +151,8 @@ def get_dealer_details(request, dealer_id):
     # print(dealer)
     context['dealer_name'] = dealer.full_name
     context['dealer_id'] = dealer_id
-    url = "https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/get-reviews"
+    # url = "https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/get-reviews"
+    url = os.environ['URL_GET_REVIEWS']
     reviews = get_dealer_reviews_from_cf(url, dealer_id)
     context['reviews_list'] = reviews
     # reviewers_names = '; '.join([str(review) for review in reviews])
