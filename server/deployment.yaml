@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: dealership
+  name: dealership
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: dealership
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: dealership
+    spec:
+      containers:
+      - image: us.icr.io/sn-labs-dudsdu/dealership:latest
+        imagePullPolicy: Always
+        name: dealership
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        env:
+        - name: URL_NLU
+          value: "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/7c29c038-64fb-4ffc-90c5-26c180368811"
+        - name: URL_GET_DEALERS
+          value: "https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/get-dealership"
+        - name: URL_POST_REVIEW
+          value: "https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/post-review"
+        - name: URL_GET_REVIEWS
+          value: "https://us-south.functions.appdomain.cloud/api/v1/web/3359b9cf-db9c-4cef-8e9b-c4855d4a5213/dealership-package/get-reviews"
+        - name: API_KEY
+          value: "0uEVzBh-iNBTk-Hl2w6bTeKI0YA0vHYHrXR5T9GpnuaG"
+        
